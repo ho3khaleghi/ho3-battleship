@@ -11,8 +11,9 @@ user_score = 0
 
 def main():
     draw_boards()
-    define_ship()
-    draw_boards()
+    for _ in range(5):
+        define_ship()
+        draw_boards()
     game_over = False
     while game_over == False:
         position = input("Enter the position: ")
@@ -41,16 +42,39 @@ def validate_direction(direction) -> bool:
         return False
     return True
 
+
 def define_ship():
-    begin = input("Please enter the starting position of your ship: ")
+    while True:
+        begin = input("Please enter the starting position of your ship: ")
+        if validate_cordinate(begin) == True:
+            break
     while True:
         direction = input("Please enter V for Vertically and H for Horizontally shape of your ship: ").upper()
         if validate_direction(direction) == True:
             break
-    if validate_cordinate(begin):
-        position = position_translator(begin)
+    
+    position = position_translator(begin)
+    if ship_validator(position, direction):
         draw_ship(position, direction)
+    else:
+        print("The position is already taken by another ship or overlap with another ship.")
+        define_ship()
 
+
+    
+        
+        
+            
+def ship_validator(position: int, direction) -> bool:
+    if direction == "V":
+        y = 10
+    else:
+        y = 1
+    for _ in range(4):
+        if user_board[position].is_ship:
+            return False
+        position += y
+    return True
 
 def draw_boards():
     print("                 ",chr(7140) ,"Battleship Game", chr(7140))
@@ -105,7 +129,7 @@ def validate_cordinate(position: str) -> bool:
         return False
     return True
 
-def position_translator(position: str):
+def position_translator(position: str) -> int:
     input_length = len(position)
     position = position.upper()
     char = position[input_length - 1]
