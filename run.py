@@ -9,15 +9,48 @@ computer_board = [Board_cell(False, False) for _ in range(100)]
 user_board = [Board_cell(False, False) for _ in range(100)]
 user_score = 0
 
-def define_ship(begin, end):
-    for x in range(begin, end):
-        user_board[x].is_ship = True
+def main():
+    draw_boards()
+    define_ship()
+    draw_boards()
+    game_over = False
+    while game_over == False:
+        position = input("Enter the position: ")
+        if validate_cordinate(position):
+            cordinate = position_translator(position)
+            hit(cordinate)
+            draw_boards()
+            game_over = user_score == 2
 
-define_ship(45, 48)
-define_ship(1, 4)
-define_ship(85, 88)
-define_ship(63, 66)
-define_ship(20, 23)
+
+def draw_ship(begin: int, direction):
+    
+    user_board[begin].is_ship = True
+    if direction == "V":
+        y = 10
+    else:
+        y = 1
+    for _ in range(3):
+        begin += y
+        user_board[begin].is_ship = True
+
+
+def validate_direction(direction) -> bool:
+    if direction != "V" and direction != "H":   
+        print("Please enter either V or H.")
+        return False
+    return True
+
+def define_ship():
+    begin = input("Please enter the starting position of your ship: ")
+    while True:
+        direction = input("Please enter V for Vertically and H for Horizontally shape of your ship: ").upper()
+        if validate_direction(direction) == True:
+            break
+    if validate_cordinate(begin):
+        position = position_translator(begin)
+        draw_ship(position, direction)
+
 
 def draw_boards():
     print("                 ",chr(7140) ,"Battleship Game", chr(7140))
@@ -53,7 +86,6 @@ def draw_boards():
 
         print()
 
-draw_boards()
 
 def validate_cordinate(position: str) -> bool:
     input_length = len(position)
@@ -68,17 +100,16 @@ def validate_cordinate(position: str) -> bool:
         print("Input is in incorrect format!")
         return False
     char = position[0]
-    if ~char.isdigit():
+    if char.isdigit() == False:
         print("Input is in incorrect format!")
         return False
     return True
 
-def hit(position: str):
+def position_translator(position: str):
     input_length = len(position)
     position = position.upper()
     char = position[input_length - 1]
     
-    global user_score
     x = (int(position.replace(char, "")) - 1) * 10
     y = 0
     
@@ -105,7 +136,11 @@ def hit(position: str):
     else:
         print("Invalid cordinate.")
         return
-    cell = user_board[x + y]
+    return x + y
+
+def hit(position: int):
+    global user_score
+    cell = user_board[position]
     if cell.is_hit == True:
         print("The position is a duplicate, please enter new position.")
     else:
@@ -113,13 +148,4 @@ def hit(position: str):
         if cell.is_ship:
             user_score += 1
     
-
-
-
-game_over = False
-while game_over == False:
-    position = input("Enter the position: ")
-    if validate_cordinate(position):
-        hit(position)
-        draw_boards()
-        game_over = user_score == 15
+main()
