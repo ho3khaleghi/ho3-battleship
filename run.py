@@ -16,28 +16,64 @@ def main():
     draw_boards()
     for _ in range(5):
         define_ship()
+        computer_ships()
         draw_boards()
-    game_over = False
-    while game_over == False:
+    while check_winner() == False:
+            user_turn()
+            if check_winner() == False:
+                computer_turn()
+            draw_boards()
+
+
+def check_winner() -> bool:
+    if user_score == 20:
+        print("You win!")
+        return True
+    elif computer_score == 20:
+        print("You Lose!")
+        return True
+    return False
+
+
+def user_turn():
+    global user_score
+    while True:
         position = input("Enter the position: ")
         if validate_cordinate(position):
             cordinate = position_translator(position)
-            hit(cordinate)
-            draw_boards()
-            game_over = user_score == 15 or computer_score == 15
+            if hit(cordinate):
+                if computer_board[cordinate].is_ship == True:
+                    user_score += 1
+                break
 
 
-def draw_ship(begin: int, direction):
+def computer_turn():
+    global computer_score
+    while True:
+        position = random.randint(0, 99)
+        if computer_hit(position):
+            if user_board[position].is_ship:
+                computer_score += 1
+            break
+
+
+def draw_ship(begin: int, direction, is_computer):
     # Set the location of the user ship by the location and direction that user entered
     
-    user_board[begin].is_ship = True
+    if is_computer:
+        computer_board[begin].is_ship = True
+    else:
+        user_board[begin].is_ship = True
     if direction == "V":
         y = 10
     else:
         y = 1
     for _ in range(3):
         begin += y
-        user_board[begin].is_ship = True
+        if is_computer:
+            computer_board[begin].is_ship = True
+        else:
+            user_board[begin].is_ship = True
 
 
 def validate_direction(direction) -> bool:
@@ -50,6 +86,8 @@ def validate_direction(direction) -> bool:
 
 
 def define_ship():
+    # Make ships for the user
+
     while True:
         begin = input("Please enter the starting position of your ship: ")
         if validate_cordinate(begin) == True:
@@ -60,25 +98,37 @@ def define_ship():
             break
     
     position = position_translator(begin)
-    if ship_validator(position, direction):
-        draw_ship(position, direction)
+    if ship_validator(position, direction, False):
+        draw_ship(position, direction, False)
     else:
-        print("The position is already taken by another ship or overlap with another ship.")
+        print("The position is out of grid, already taken by another ship or overlap with another ship.")
         define_ship()
 
 
 def computer_ships():
     # Generate random position for computer ships
-    # random.randint(1, 100)
-    pass
+
+    while True:
+        position = random.randint(0, 99)
+        rand_direction = random.randint(1, 2)
+        if rand_direction == 1:
+            direction = "V"
+        else:
+            direction = "H"
+        if ship_validator(position, direction, True):
+            draw_ship(position, direction, True)
+            break
         
 
-def computer_hit():
+def computer_hit(position: int) -> bool:
     # Generate random shot for computer
-
-    pass
+    if user_board[position].is_hit:
+        return False
+    else:
+        user_board[position].is_hit = True
+        return True
             
-def ship_validator(position: int, direction) -> bool:
+def ship_validator(position: int, direction, is_computer: bool) -> bool:
     # Validate that user can put the ship in the entry position or not
 
     if direction == "V":
@@ -86,8 +136,20 @@ def ship_validator(position: int, direction) -> bool:
     else:
         y = 1
     for _ in range(4):
-        if user_board[position].is_ship:
+        if y == 1 and position % 10 in [0, 8, 9]:
             return False
+        if is_computer:
+            try:
+                if computer_board[position].is_ship:
+                    return False
+            except:
+                return False
+        else:
+            try: 
+                if user_board[position].is_ship:
+                    return False
+            except:
+                return False
         position += y
     return True
 
@@ -103,7 +165,6 @@ def draw_boards():
         if x < 9:
             row_number += "0"
         row_number += str(x + 1) + " "
-        output = row_number
         print(row_number, end="")
         for y in range(10):
             cell = user_board[x * 10 + y]
@@ -122,6 +183,8 @@ def draw_boards():
         for y in range(10):
             if computer_board[x * 10 + y].is_ship and computer_board[x * 10 + y].is_hit:
                 print("o", end=" ")
+            elif computer_board[x * 10 + y].is_ship == False and computer_board[x * 10 + y].is_hit:
+                print("x", end=" ")
             else:
                 print("_", end=" ")
 
@@ -183,16 +246,15 @@ def position_translator(position: str) -> int:
         return
     return x + y
 
-def hit(position: int):
+def hit(position: int) -> bool:
     # Check the entry by the user that is duplicate or not, and if not duplicate check if it hits the ship or not
 
-    global user_score
-    cell = user_board[position]
-    if cell.is_hit == True:
+    cell = computer_board[position]
+    if cell.is_hit:
         print("The position is a duplicate, please enter new position.")
+        return False
     else:
         cell.is_hit = True
-        if cell.is_ship:
-            user_score += 1
+        return True
     
 main()
