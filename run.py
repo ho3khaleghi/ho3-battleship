@@ -171,13 +171,21 @@ def ship_validator(position: int, direction, is_computer: bool, size: int, user_
 def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: int):
     # Draw the user board and computer board
 
+    alphabet_row = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+
     print("                 ",chr(7140) ,"Battleship Game", chr(7140))
     print("       Your board                     Computer board  ")
     print(chr(4502) * 56)
-    print("   A B C D E F G H I J    ",chr(8214),"      A B C D E F G H I J")
+    print("   ", end="")
+    for i in range(size):
+        print(alphabet_row[i], end=" ")
+    print("   ",chr(8214),"      ", end="")
+    for i in range(size):
+        print(alphabet_row[i], end=" ")
+    print()
     for x in range(size):
         row_number = ""
-        if x < (size - 1):
+        if x < 9:
             row_number += "0"
         row_number += str(x + 1) + " "
         print(row_number, end="")
