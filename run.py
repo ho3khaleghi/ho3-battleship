@@ -1,4 +1,5 @@
 import random
+import emoji
 
 class Board_cell:
     def __init__(self, is_ship, is_hit):
@@ -12,10 +13,12 @@ def board_setup(size: int) -> ([Board_cell], [Board_cell]):
 
 user_score = 0
 computer_score = 0
+alphabet_row = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
 
 def main():
     # The main logic of the game which can control the flow of the code aswell
     while True:
+        print(emoji.emojize(':ship:'))
         size_choice = input("Enter board size for your game between 5(5x5), 8(8x8) or 10(10x10): ")
         try:
             size = int(size_choice)
@@ -33,20 +36,35 @@ def main():
         define_ship(size, user_board, computer_board)
         computer_ships(size, user_board, computer_board)
         draw_boards(user_board, computer_board, size)
-    while check_winner() == False:
+    while check_winner(size) == False:
             user_turn(computer_board, size)
-            if check_winner() == False:
-                computer_turn(user_board)
+            if check_winner(size) == False:
+                computer_turn(user_board, size)
             draw_boards(user_board, computer_board, size)
 
 
-def check_winner() -> bool:
-    if user_score == 20:
-        print("You win!")
-        return True
-    elif computer_score == 20:
-        print("You Lose!")
-        return True
+def check_winner(size: int) -> bool:
+    if size == 5:
+        if user_score == 5:
+            print("You Win!")
+            return True
+        elif computer_score == 5:
+            print("You Lose!")
+            return True
+    elif size == 8:
+        if user_score == 15:
+            print("You Win!")
+            return True
+        elif computer_score == 15:
+            print("You Lose!")
+            return True
+    else:    
+        if user_score == 20:
+            print("You win!")
+            return True
+        elif computer_score == 20:
+            print("You Lose!")
+            return True
     return False
 
 
@@ -54,7 +72,7 @@ def user_turn(computer_board: [Board_cell], size: int):
     global user_score
     while True:
         position = input("Enter the position: ")
-        if validate_cordinate(position):
+        if validate_cordinate(position, size):
             cordinate = position_translator(position, size)
             if hit(cordinate, computer_board):
                 if computer_board[cordinate].is_ship == True:
@@ -62,10 +80,10 @@ def user_turn(computer_board: [Board_cell], size: int):
                 break
 
 
-def computer_turn(user_board: [Board_cell]):
+def computer_turn(user_board: [Board_cell], size: int):
     global computer_score
     while True:
-        position = random.randint(0, 99)
+        position = random.randint(0, size * size - 1)
         if computer_hit(position, user_board):
             if user_board[position].is_ship:
                 computer_score += 1
@@ -83,7 +101,14 @@ def draw_ship(begin: int, direction, is_computer, size: int, user_board: [Board_
         y = size
     else:
         y = 1
-    for _ in range(3):
+    
+    if size == 5:
+        ship_count = 1
+    elif size == 8:
+        ship_count = 3
+    else:
+        ship_count = 4
+    for _ in range(ship_count - 1):
         begin += y
         if is_computer:
             computer_board[begin].is_ship = True
@@ -105,10 +130,13 @@ def define_ship(size: int, user_board: [Board_cell], computer_board: [Board_cell
 
     while True:
         begin = input("Please enter the starting position of your ship: ")
-        if validate_cordinate(begin) == True:
+        if validate_cordinate(begin, size) == True:
             break
     while True:
-        direction = input("Please enter V for Vertically and H for Horizontally shape of your ship: ").upper()
+        if size != 5:
+            direction = input("Please enter V for Vertically and H for Horizontally shape of your ship: ").upper()
+        else:
+            direction = "V"
         if validate_direction(direction) == True:
             break
     
@@ -146,12 +174,25 @@ def computer_hit(position: int, user_board: [Board_cell]) -> bool:
 def ship_validator(position: int, direction, is_computer: bool, size: int, user_board: [Board_cell], computer_board: [Board_cell]) -> bool:
     # Validate that user can put the ship in the entry position or not
 
+    if size == 10:
+        remaining = [0, 8, 9]
+    elif size == 8:
+        remaining = [0, 7]
+    else:
+        remaining = []
+
     if direction == "V":
         y = size
     else:
         y = 1
-    for _ in range(4):
-        if y == 1 and position % size in [0, 8, 9]:
+    if size == 5:
+        ship_count = 1
+    elif size == 8:
+        ship_count = 3
+    else:
+        ship_count = 4
+    for _ in range(ship_count):
+        if y == 1 and (position + 1) % size in remaining:
             return False
         if is_computer:
             try:
@@ -171,15 +212,23 @@ def ship_validator(position: int, direction, is_computer: bool, size: int, user_
 def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: int):
     # Draw the user board and computer board
 
-    alphabet_row = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+    if size == 5:
+        print("        〰Battleship Game〰")
+        print("   Your board       Computer board  ")
+        print(chr(4502) * 34)
+    elif size == 8:
+        print("             〰Battleship Game〰")
+        print("     Your board              Computer board")
+        print(chr(4502) * 46)    
+    else:
+        print("                 〰Battleship Game〰")
+        print("      Your board                    Computer board")
+        print(chr(4502) * 54)
 
-    print("                 ",chr(7140) ,"Battleship Game", chr(7140))
-    print("       Your board                     Computer board  ")
-    print(chr(4502) * 56)
-    print("   ", end="")
+    print("    ", end="")
     for i in range(size):
         print(alphabet_row[i], end=" ")
-    print("   ",chr(8214),"      ", end="")
+    print("  ",chr(8214),"       ", end="")
     for i in range(size):
         print(alphabet_row[i], end=" ")
     print()
@@ -193,32 +242,36 @@ def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: in
             cell = user_board[x * size + y]
             if cell.is_ship:
                 if cell.is_hit:
-                    print("o", end=" ")
+                    print("🔥", end="")
                 else:
-                    print("$", end=" ")
+                    print("🚢", end="")
             else:
                 if cell.is_hit:
-                    print("x", end=" ")
+                    print("❌", end="")
                 else:
-                    print("_", end=" ")
+                    print("🌊", end="")
 
         print("   ", chr(8214), "  ", row_number, end="")
         for y in range(size):
             if computer_board[x * size + y].is_ship and computer_board[x * size + y].is_hit:
-                print("o", end=" ")
+                print("🔥", end="")
+            # elif computer_board[x * size + y].is_ship:
+            #     print("$", end=" ")
             elif computer_board[x * size + y].is_ship == False and computer_board[x * size + y].is_hit:
-                print("x", end=" ")
+                print("❌", end="")
             else:
-                print("_", end=" ")
+                print("🌊", end="")
 
         print()
 
 
-def validate_cordinate(position: str) -> bool:
+def validate_cordinate(position: str, size: int) -> bool:
     # Validate the cell entry by user
-
+    
     input_length = len(position)
     
+    if input_length == 3 and position[0:2] != "10":
+        return False
     if input_length < 2 or input_length > 3:
         print("Input is in incorrect format!")
         return False
@@ -226,6 +279,16 @@ def validate_cordinate(position: str) -> bool:
     char = position[input_length - 1]
     
     if char.isdigit():
+        print("Input is in incorrect format!")
+        return False
+    if size == 5:
+        valid_headers = "ABCDE"
+    elif size == 8:
+        valid_headers = "ABCDEFGH"
+    else:
+        valid_headers = "ABCDEFGHIJ"
+    
+    if not valid_headers.__contains__(char):
         print("Input is in incorrect format!")
         return False
     char = position[0]
