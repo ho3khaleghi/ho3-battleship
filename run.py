@@ -1,5 +1,6 @@
 import random
 import emoji
+import sys, subprocess
 
 class Board_cell:
     def __init__(self, is_ship, is_hit):
@@ -18,7 +19,22 @@ alphabet_row = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
 def main():
     # The main logic of the game which can control the flow of the code aswell
     while True:
-        print(emoji.emojize(':ship:'))
+        print()
+        print("                              🌊❌🚢🔥〰Battleship Game〰🔥🚢❌🌊")
+        print()
+        print("                           Welcome to the battle ship by ho3khaleghi")
+        print("❗Rules:")
+        print()
+        print("1. You should choose the board size of the game between 5(5x5), 8(8x8), 10(10x10).")
+        print()
+        print("2. You need to decide to put your ships in the position you like to.")
+        print()
+        print("3. You need to choose a direction of your ship. Just remember the starting point of your ship is the first position you have chose and make sure your ship will be in the grid.")
+        print()
+        print("4. Start guessing computers ship positions. If u sink all of your opponent's ships you will be the winner, but if not ... sadly you will be the loser.")
+        print()
+        print("                                  🌏Good Luck and Have Fun!🌏")
+        print()
         size_choice = input("Enter board size for your game between 5(5x5), 8(8x8) or 10(10x10): ")
         try:
             size = int(size_choice)
@@ -44,28 +60,50 @@ def main():
 
 
 def check_winner(size: int) -> bool:
+    winner = False
+    loser = False
     if size == 5:
         if user_score == 5:
-            print("You Win!")
-            return True
+            winner = True
         elif computer_score == 5:
-            print("You Lose!")
-            return True
+            loser = True
     elif size == 8:
         if user_score == 15:
-            print("You Win!")
-            return True
+            winner = True
         elif computer_score == 15:
-            print("You Lose!")
-            return True
+            loser = True
     else:    
         if user_score == 20:
-            print("You win!")
-            return True
+            winner = True
         elif computer_score == 20:
-            print("You Lose!")
-            return True
+            loser = True
+    if winner:
+        print()
+        print("🏆You win!")
+        print("Thank you for playing!")
+        print()
+        return True
+    if loser:
+        print()
+        print("💀You Lose!")
+        print("Thank you for playing!")
+        print()
+        return True
     return False
+
+
+def clear_screen():
+    '''
+    This function just clear the terminal after each entry in inputs
+    form https://www.youtube.com/watch?v=Kmu6rmPQt4c&ab_channel=FabioMusanni-ProgrammingChannel
+    '''
+    operating_system = sys.platform
+
+    if operating_system == "win32":
+        subprocess.run("cls", shell=True)
+    
+    elif operating_system == "linux" or operating_system == "darwin":
+        subprocess.run("clear", shell=True)
 
 
 def user_turn(computer_board: [Board_cell], size: int):
@@ -212,18 +250,19 @@ def ship_validator(position: int, direction, is_computer: bool, size: int, user_
 def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: int):
     # Draw the user board and computer board
 
+    clear_screen()
     if size == 5:
         print("        〰Battleship Game〰")
         print("   Your board       Computer board  ")
-        print(chr(4502) * 34)
+        print(chr(4502) * 35)
     elif size == 8:
         print("             〰Battleship Game〰")
         print("     Your board              Computer board")
-        print(chr(4502) * 46)    
+        print(chr(4502) * 47)    
     else:
         print("                 〰Battleship Game〰")
         print("      Your board                    Computer board")
-        print(chr(4502) * 54)
+        print(chr(4502) * 55)
 
     print("    ", end="")
     for i in range(size):
@@ -255,8 +294,6 @@ def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: in
         for y in range(size):
             if computer_board[x * size + y].is_ship and computer_board[x * size + y].is_hit:
                 print("🔥", end="")
-            # elif computer_board[x * size + y].is_ship:
-            #     print("$", end=" ")
             elif computer_board[x * size + y].is_ship == False and computer_board[x * size + y].is_hit:
                 print("❌", end="")
             else:
