@@ -20,7 +20,7 @@ def main():
     # The main logic of the game which can control the flow of the code aswell
     while True:
         print()
-        print("                              🌊  ❌  🚢  🔥  〰Battleship Game〰🔥  🚢  ❌  🌊")
+        print("                  🌊  ❌  🚢  🔥  〰Battleship Game〰🔥  🚢  ❌  🌊")
         print()
         print("                           Welcome to the battle ship by ho3khaleghi")
         print("❗  Rules:")
@@ -33,7 +33,7 @@ def main():
         print()
         print("4. Start guessing computers ship positions. If u sink all of your opponent's ships you will be the winner, but if not ... sadly you will be the loser.")
         print()
-        print("                                  🌏  Good Luck and Have Fun! 🌏")
+        print("                      🌏  Good Luck and Have Fun! 🌏")
         print()
         size_choice = input("Enter board size for your game between 5(5x5), 8(8x8) or 10(10x10): ")
         try:
