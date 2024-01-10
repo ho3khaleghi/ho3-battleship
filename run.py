@@ -20,10 +20,10 @@ def main():
     # The main logic of the game which can control the flow of the code aswell
     while True:
         print()
-        print("                              🌊❌🚢🔥〰Battleship Game〰🔥🚢❌🌊")
+        print("                              🌊  ❌  🚢  🔥〰Battleship Game〰🔥  🚢  ❌  🌊")
         print()
         print("                           Welcome to the battle ship by ho3khaleghi")
-        print("❗Rules:")
+        print("❗  Rules:")
         print()
         print("1. You should choose the board size of the game between 5(5x5), 8(8x8), 10(10x10).")
         print()
@@ -33,7 +33,7 @@ def main():
         print()
         print("4. Start guessing computers ship positions. If u sink all of your opponent's ships you will be the winner, but if not ... sadly you will be the loser.")
         print()
-        print("                                  🌏Good Luck and Have Fun!🌏")
+        print("                                  🌏  Good Luck and Have Fun!  🌏")
         print()
         size_choice = input("Enter board size for your game between 5(5x5), 8(8x8) or 10(10x10): ")
         try:
@@ -79,13 +79,13 @@ def check_winner(size: int) -> bool:
             loser = True
     if winner:
         print()
-        print("🏆You win!")
+        print("🏆  You win!")
         print("Thank you for playing!")
         print()
         return True
     if loser:
         print()
-        print("💀You Lose!")
+        print("💀  You Lose!")
         print("Thank you for playing!")
         print()
         return True
@@ -281,23 +281,23 @@ def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: in
             cell = user_board[x * size + y]
             if cell.is_ship:
                 if cell.is_hit:
-                    print("🔥", end="")
+                    print("🔥  ", end="")
                 else:
-                    print("🚢", end="")
+                    print("🚢  ", end="")
             else:
                 if cell.is_hit:
-                    print("❌", end="")
+                    print("❌  ", end="")
                 else:
-                    print("🌊", end="")
+                    print("🌊  ", end="")
 
         print("   ", chr(8214), "  ", row_number, end="")
         for y in range(size):
             if computer_board[x * size + y].is_ship and computer_board[x * size + y].is_hit:
-                print("🔥", end="")
+                print("🔥  ", end="")
             elif computer_board[x * size + y].is_ship == False and computer_board[x * size + y].is_hit:
-                print("❌", end="")
+                print("❌  ", end="")
             else:
-                print("🌊", end="")
+                print("🌊  ", end="")
 
         print()
 
