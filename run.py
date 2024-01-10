@@ -20,7 +20,7 @@ def main():
     # The main logic of the game which can control the flow of the code aswell
     while True:
         print()
-        print("                  🌊  ❌  🚢  🔥  〰Battleship Game〰🔥  🚢  ❌  🌊")
+        print("           🌊  ❌  🚢  🔥  〰Battleship Game〰🔥  🚢  ❌  🌊")
         print()
         print("                           Welcome to the battle ship by ho3khaleghi")
         print("❗  Rules:")
