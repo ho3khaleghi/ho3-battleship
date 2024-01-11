@@ -1,41 +1,58 @@
 import random
 import emoji
-import sys, subprocess
+import sys
+import subprocess
+
 
 class Board_cell:
     def __init__(self, is_ship, is_hit):
         self.is_ship = is_ship
         self.is_hit = is_hit
 
+
 def board_setup(size: int) -> ([Board_cell], [Board_cell]):
     computer_board = [Board_cell(False, False) for _ in range(size * size)]
     user_board = [Board_cell(False, False) for _ in range(size * size)]
     return computer_board, user_board
 
+
 user_score = 0
 computer_score = 0
 alphabet_row = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
 
+
 def main():
     # The main logic of the game which can control the flow of the code aswell
+    global user_score
+    global computer_score
     while True:
         print()
         print("               🌊  ❌  🚢  🔥  〰Battleship Game〰🔥  🚢  ❌  🌊")
         print()
-        print("                           Welcome to the battle ship by ho3khaleghi")
+        print("                           "
+              "Welcome to the battle ship by ho3khaleghi")
         print("❗  Rules:")
         print()
-        print("1. You should choose the board size of the game between 5(5x5), 8(8x8), 10(10x10).")
+        print("1. You should choose the board size of the game"
+              " between 5(5x5), 8(8x8), 10(10x10).")
         print()
-        print("2. You need to decide to put your ships in the position you like to.")
+        print("2. You need to decide to put your ships"
+              " in the position you like to.")
         print()
-        print("3. You need to choose a direction of your ship. Just remember the starting point of your ship is the first position you have chose and make sure your ship will be in the grid.")
+        print("3. You need to choose a direction of your ship. Just remember"
+              " the starting point of your ship is the first position you"
+              " have chose and make sure your ship will be in the grid.")
         print()
-        print("4. Start guessing computers ship positions. If u sink all of your opponent's ships you will be the winner, but if not ... sadly you will be the loser.")
+        print("4. Start guessing computers ship positions."
+              " If u sink all of your opponent's ships you"
+              " will be the winner, but if not"
+              " ... sadly you will be the loser.")
         print()
-        print("                      🌏  Good Luck and Have Fun! 🌏")
+        print("                      "
+              "🌏  Good Luck and Have Fun! 🌏")
         print()
-        size_choice = input("Enter board size for your game between 5(5x5), 8(8x8) or 10(10x10): ")
+        size_choice = input("Enter board size for your"
+                            " game between 5(5x5), 8(8x8) or 10(10x10): ")
         try:
             size = int(size_choice)
             if size in [5, 8, 10]:
@@ -52,11 +69,32 @@ def main():
         define_ship(size, user_board, computer_board)
         computer_ships(size, user_board, computer_board)
         draw_boards(user_board, computer_board, size)
-    while check_winner(size) == False:
+
+    winner = check_winner(size)
+
+    while winner is False:
             user_turn(computer_board, size)
-            if check_winner(size) == False:
+            winner = check_winner(size)
+            if winner is False:
                 computer_turn(user_board, size)
             draw_boards(user_board, computer_board, size)
+            winner = check_winner(size)
+    if winner:
+            response = reset_game()
+            if response != "n":
+                user_score = 0
+                computer_score = 0
+                clear_screen()
+                main()
+            elif response == "n":
+                clear_screen()
+                return
+
+
+def reset_game():
+    response = input("Do you want to play again?"
+                     " Press any key for rematch or 'n' for quit: ").lower()
+    return response
 
 
 def check_winner(size: int) -> bool:
@@ -72,7 +110,7 @@ def check_winner(size: int) -> bool:
             winner = True
         elif computer_score == 15:
             loser = True
-    else:    
+    else:
         if user_score == 20:
             winner = True
         elif computer_score == 20:
@@ -80,12 +118,14 @@ def check_winner(size: int) -> bool:
     if winner:
         print()
         print("🏆  You win!")
+        print()
         print("Thank you for playing!")
         print()
         return True
     if loser:
         print()
         print("💀  You Lose!")
+        print()
         print("Thank you for playing!")
         print()
         return True
@@ -95,13 +135,14 @@ def check_winner(size: int) -> bool:
 def clear_screen():
     '''
     This function just clear the terminal after each entry in inputs
-    form https://www.youtube.com/watch?v=Kmu6rmPQt4c&ab_channel=FabioMusanni-ProgrammingChannel
+    form https://www.youtube.com/watch?v=Kmu6rmPQt4c&"
+    "ab_channel=FabioMusanni-ProgrammingChannel
     '''
     operating_system = sys.platform
 
     if operating_system == "win32":
         subprocess.run("cls", shell=True)
-    
+
     elif operating_system == "linux" or operating_system == "darwin":
         subprocess.run("clear", shell=True)
 
@@ -113,7 +154,7 @@ def user_turn(computer_board: [Board_cell], size: int):
         if validate_cordinate(position, size):
             cordinate = position_translator(position, size)
             if hit(cordinate, computer_board):
-                if computer_board[cordinate].is_ship == True:
+                if computer_board[cordinate].is_ship is True:
                     user_score += 1
                 break
 
@@ -128,9 +169,14 @@ def computer_turn(user_board: [Board_cell], size: int):
             break
 
 
-def draw_ship(begin: int, direction, is_computer, size: int, user_board: [Board_cell], computer_board: [Board_cell]):
-    # Set the location of the user ship by the location and direction that user entered
-    
+def draw_ship(begin: int,
+              direction, is_computer, size: int,
+              user_board: [Board_cell], computer_board: [Board_cell]):
+    '''
+    Set the location of the user ship by
+    the location and direction that user entered
+    '''
+
     if is_computer:
         computer_board[begin].is_ship = True
     else:
@@ -139,7 +185,7 @@ def draw_ship(begin: int, direction, is_computer, size: int, user_board: [Board_
         y = size
     else:
         y = 1
-    
+
     if size == 5:
         ship_count = 1
     elif size == 8:
@@ -155,38 +201,50 @@ def draw_ship(begin: int, direction, is_computer, size: int, user_board: [Board_
 
 
 def validate_direction(direction) -> bool:
-    # Validate that the entry of the user should be only vertically or horizontally
+    '''
+    Validate that the entry of the user
+    should be only vertically or horizontally
+    '''
 
-    if direction != "V" and direction != "H":   
+    if direction != "V" and direction != "H":
         print("Please enter either V or H.")
         return False
     return True
 
 
-def define_ship(size: int, user_board: [Board_cell], computer_board: [Board_cell]):
+def define_ship(size: int,
+                user_board: [Board_cell],
+                computer_board: [Board_cell]):
     # Make ships for the user
 
     while True:
         begin = input("Please enter the starting position of your ship: ")
-        if validate_cordinate(begin, size) == True:
+        if validate_cordinate(begin, size) is True:
             break
     while True:
         if size != 5:
-            direction = input("Please enter V for Vertically and H for Horizontally shape of your ship: ").upper()
+            direction = input("Please enter V for Vertically"
+                              " and H for Horizontally"
+                              " shape of your ship: ").upper()
         else:
             direction = "V"
-        if validate_direction(direction) == True:
+        if validate_direction(direction) is True:
             break
-    
+
     position = position_translator(begin, size)
-    if ship_validator(position, direction, False, size, user_board, computer_board):
+    if ship_validator(position,
+                      direction, False, size,
+                      user_board, computer_board):
         draw_ship(position, direction, False, size, user_board, computer_board)
     else:
-        print("The position is out of grid, already taken by another ship or overlap with another ship.")
+        print("The position is out of grid, already"
+              " taken by another ship or overlap with another ship.")
         define_ship(size, user_board, computer_board)
 
 
-def computer_ships(size: int, user_board: [Board_cell], computer_board: [Board_cell]):
+def computer_ships(size: int,
+                   user_board: [Board_cell],
+                   computer_board: [Board_cell]):
     # Generate random position for computer ships
 
     while True:
@@ -196,10 +254,14 @@ def computer_ships(size: int, user_board: [Board_cell], computer_board: [Board_c
             direction = "V"
         else:
             direction = "H"
-        if ship_validator(position, direction, True, size, user_board, computer_board):
-            draw_ship(position, direction, True, size, user_board, computer_board)
+        if ship_validator(position, direction,
+                          True, size, user_board,
+                          computer_board):
+            draw_ship(position, direction,
+                      True, size, user_board,
+                      computer_board)
             break
-        
+
 
 def computer_hit(position: int, user_board: [Board_cell]) -> bool:
     # Generate random shot for computer
@@ -208,8 +270,12 @@ def computer_hit(position: int, user_board: [Board_cell]) -> bool:
     else:
         user_board[position].is_hit = True
         return True
-            
-def ship_validator(position: int, direction, is_computer: bool, size: int, user_board: [Board_cell], computer_board: [Board_cell]) -> bool:
+
+
+def ship_validator(position: int,
+                   direction, is_computer: bool,
+                   size: int, user_board: [Board_cell],
+                   computer_board: [Board_cell]) -> bool:
     # Validate that user can put the ship in the entry position or not
 
     if size == 10:
@@ -239,7 +305,7 @@ def ship_validator(position: int, direction, is_computer: bool, size: int, user_
             except:
                 return False
         else:
-            try: 
+            try:
                 if user_board[position].is_ship:
                     return False
             except:
@@ -247,7 +313,10 @@ def ship_validator(position: int, direction, is_computer: bool, size: int, user_
         position += y
     return True
 
-def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: int):
+
+def draw_boards(user_board: [Board_cell],
+                computer_board: [Board_cell],
+                size: int):
     # Draw the user board and computer board
 
     clear_screen()
@@ -258,7 +327,7 @@ def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: in
     elif size == 8:
         print("             〰Battleship Game〰")
         print("     Your board              Computer board")
-        print(chr(4502) * 47)    
+        print(chr(4502) * 47)
     else:
         print("                 〰Battleship Game〰")
         print("      Your board                    Computer board")
@@ -267,7 +336,7 @@ def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: in
     print("    ", end="")
     for i in range(size):
         print(alphabet_row[i], end=" ")
-    print("  ",chr(8214),"       ", end="")
+    print("  ", chr(8214), "       ", end="")
     for i in range(size):
         print(alphabet_row[i], end=" ")
     print()
@@ -291,10 +360,11 @@ def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: in
                     print("🌊 ", end="")
 
         print("   ", chr(8214), "  ", row_number, end="")
+        cpt_board_xy = computer_board[x * size + y]
         for y in range(size):
-            if computer_board[x * size + y].is_ship and computer_board[x * size + y].is_hit:
+            if cpt_board_xy.is_ship and cpt_board_xy.is_hit:
                 print("🔥 ", end="")
-            elif computer_board[x * size + y].is_ship == False and computer_board[x * size + y].is_hit:
+            elif cpt_board_xy.is_ship is False and cpt_board_xy.is_hit:
                 print("❌ ", end="")
             else:
                 print("🌊 ", end="")
@@ -304,9 +374,9 @@ def draw_boards(user_board: [Board_cell], computer_board: [Board_cell], size: in
 
 def validate_cordinate(position: str, size: int) -> bool:
     # Validate the cell entry by user
-    
+
     input_length = len(position)
-    
+
     if input_length == 3 and position[0:2] != "10":
         return False
     if input_length < 2 or input_length > 3:
@@ -314,7 +384,7 @@ def validate_cordinate(position: str, size: int) -> bool:
         return False
     position = position.upper()
     char = position[input_length - 1]
-    
+
     if char.isdigit():
         print("Input is in incorrect format!")
         return False
@@ -324,15 +394,16 @@ def validate_cordinate(position: str, size: int) -> bool:
         valid_headers = "ABCDEFGH"
     else:
         valid_headers = "ABCDEFGHIJ"
-    
+
     if not valid_headers.__contains__(char):
         print("Input is in incorrect format!")
         return False
     char = position[0]
-    if char.isdigit() == False:
+    if char.isdigit() is False:
         print("Input is in incorrect format!")
         return False
     return True
+
 
 def position_translator(position: str, size: int) -> int:
     # Translate the position that user entered to integer between 1 to 100
@@ -340,10 +411,10 @@ def position_translator(position: str, size: int) -> int:
     input_length = len(position)
     position = position.upper()
     char = position[input_length - 1]
-    
+
     x = (int(position.replace(char, "")) - 1) * size
     y = 0
-    
+
     if char == "A":
         y = 0
     elif char == "B":
@@ -369,8 +440,12 @@ def position_translator(position: str, size: int) -> int:
         return
     return x + y
 
+
 def hit(position: int, computer_board: [Board_cell]) -> bool:
-    # Check the entry by the user that is duplicate or not, and if not duplicate check if it hits the ship or not
+    '''
+    Check the entry by the user that is duplicate
+    or not, and if not duplicate check if it hits the ship or not
+    '''
 
     cell = computer_board[position]
     if cell.is_hit:
@@ -379,5 +454,6 @@ def hit(position: int, computer_board: [Board_cell]) -> bool:
     else:
         cell.is_hit = True
         return True
-    
+
+
 main()
