@@ -73,22 +73,22 @@ def main():
     winner = check_winner(size)
 
     while winner is False:
-            user_turn(computer_board, size)
-            winner = check_winner(size)
-            if winner is False:
-                computer_turn(user_board, size)
-            draw_boards(user_board, computer_board, size)
-            winner = check_winner(size)
+        user_turn(computer_board, size)
+        winner = check_winner(size)
+        if winner is False:
+            computer_turn(user_board, size)
+        draw_boards(user_board, computer_board, size)
+        winner = check_winner(size)
     if winner:
-            response = reset_game()
-            if response != "n":
-                user_score = 0
-                computer_score = 0
-                clear_screen()
-                main()
-            elif response == "n":
-                clear_screen()
-                return
+        response = reset_game()
+        if response != "n":
+            user_score = 0
+            computer_score = 0
+            clear_screen()
+            main()
+        elif response == "n":
+            clear_screen()
+            return
 
 
 def reset_game():
@@ -302,13 +302,13 @@ def ship_validator(position: int,
             try:
                 if computer_board[position].is_ship:
                     return False
-            except:
+            except Exception:
                 return False
         else:
             try:
                 if user_board[position].is_ship:
                     return False
-            except:
+            except Exception:
                 return False
         position += y
     return True
