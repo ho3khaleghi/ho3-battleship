@@ -29,7 +29,7 @@ def main():
         print()
         print("               🌊  ❌  🚢  🔥  〰Battleship Game〰🔥  🚢  ❌  🌊")
         print()
-        print("                           "
+        print("               "
               "Welcome to the battle ship by ho3khaleghi")
         print("❗  Rules:")
         print()
