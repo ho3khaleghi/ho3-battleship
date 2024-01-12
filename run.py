@@ -360,11 +360,10 @@ def draw_boards(user_board: [Board_cell],
                     print("🌊 ", end="")
 
         print("   ", chr(8214), "  ", row_number, end="")
-        cpt_board_xy = computer_board[x * size + y]
         for y in range(size):
-            if cpt_board_xy.is_ship and cpt_board_xy.is_hit:
+            if computer_board[x * size + y].is_ship and computer_board[x * size + y].is_hit:
                 print("🔥 ", end="")
-            elif cpt_board_xy.is_ship is False and cpt_board_xy.is_hit:
+            elif computer_board[x * size + y].is_ship is False and computer_board[x * size + y].is_hit:
                 print("❌ ", end="")
             else:
                 print("🌊 ", end="")
