@@ -81,7 +81,7 @@ def main():
             winner = check_winner(size)
     if winner:
             response = reset_game()
-            if response != "n":
+            if response is not "n":
                 user_score = 0
                 computer_score = 0
                 clear_screen()
